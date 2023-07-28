@@ -1,55 +1,86 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package gradingsystem;
-
 import java.util.Scanner;
 
-/**
- *
- * @author Marc T
- */
 public class GradingSystem {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        //create an object from the scanner class and instanciate it
-        
-        Scanner scan = new Scanner(System.in);
-        Student[] listStudents = new Student[5];
-        
-        // create a loop for to get the values from the user
-        
-        for (int i = 0; i < listStudents.length; i++) {
-            System.out.println("Entrer nom");
-            String n = scan.next();
-            System.out.println("Entrer prenom");
-            String p = scan.next();
-            System.out.println("Entrer note 1");
-            int n1 = scan.nextInt();
-            System.out.println("Entrer note 2");
-            int n2 = scan.nextInt();
-         // create a object Student and instanciate it 
-            Student student = new Student(n, p, 0, 0);
-            listStudents[i] = student;
+  private static final int PASSING_GRADE = 60;
+  
+  public enum GradeLetter {
+    A, B, C, D, F
+  }
 
-        }
-//        for (int i = 0; i < listStudents.length; i++) {
-//            System.out.println("Nom :" + listStudents[i].getNom());
-//        }
+  public static void main(String[] args) {
 
-         //create a loop for to get the values entered and print out the results
-         
-        for (Student t : listStudents) {
-            if (((t.getNote1() + t.getNote2()) / 2) > 60) {
-                System.out.println("Nom : " + t.getNom() + " " + t.getPrenom() + " Succes");
-            } else {
-                System.out.println("Nom : " + t.getNom() + " " + t.getPrenom() + " Succes");
-            }
-        }
+    Scanner scanner = new Scanner(System.in);
+    Student[] students = new Student[5];
+
+    // Saisie des infos étudiants
+    for (int i = 0; i < students.length; i++) {
+      
+      System.out.print("Entrez le nom : ");
+      String lastName = scanner.nextLine();
+
+      System.out.print("Entrez le prénom : ");
+      String firstName = scanner.nextLine();
+
+      int grade1 = getValidGrade(scanner);
+      int grade2 = getValidGrade(scanner); 
+      int grade3 = getValidGrade(scanner);
+
+      students[i] = new Student(lastName, firstName, grade1, grade2, grade3);
     }
+
+    // Affichage des résultats
+    for (Student student : students) {
+      System.out.printf("Nom : %s %s - Moyenne : %.2f - Note : %s%n",
+        student.getLastName(), student.getFirstName(),
+        student.calculateAverageGrade(), student.getGradeLetter());
+    }
+    
+    scanner.close();
+  }
+
+  public static int getValidGrade(Scanner scanner) {
+    
+    int grade;
+    do {
+      System.out.print("Entrez la note : ");
+      grade = scanner.nextInt();
+    } while (grade < 0 || grade > 100); 
+
+    return grade;
+  }
+
+}
+
+class Student {
+
+  private final String lastName;
+  private final String firstName;
+  private final int grade1;
+  private final int grade2;
+  private final int grade3;
+
+  public Student(String lastName, String firstName, int grade1, int grade2, int grade3) {
+    this.lastName = lastName;
+    this.firstName = firstName;
+    this.grade1 = grade1;
+    this.grade2 = grade2;
+    this.grade3 = grade3;
+  }
+
+  public double calculateAverageGrade() {
+    return (grade1 + grade2 + grade3) / 3.0;
+  }
+
+  public GradeLetter getGradeLetter() {
+    
+    double avg = calculateAverageGrade();
+    
+    if (avg >= 90) return GradeLetter.A;
+    else if (avg >= 80) return GradeLetter.B;
+    else if (avg >= 70) return GradeLetter.C;
+    else if (avg >= 60) return GradeLetter.D;
+    else return GradeLetter.F;
+  }
+
 }
