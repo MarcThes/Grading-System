@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class GradingSystem {
 
+	
+  private static final int MAX_STUDENTS = 10;
   private static final int PASSING_GRADE = 60;
   
   public enum GradeLetter {
@@ -11,10 +13,19 @@ public class GradingSystem {
   public static void main(String[] args) {
 
     Scanner scanner = new Scanner(System.in);
-    Student[] students = new Student[5];
+    System.out.print("Entrez le nombre d'étudiants (max "+MAX_STUDENTS+") : ");
+    int numStudents = scanner.nextInt();
+    scanner.nextLine();
+    
+    if (numStudents > MAX_STUDENTS) {
+      System.out.println("Nombre d'étudiants trop grand, réglé sur "+MAX_STUDENTS);
+      numStudents = MAX_STUDENTS;
+    }
+    
+    Student[] students = new Student[numStudents];
 
     // Saisie des infos étudiants
-    for (int i = 0; i < students.length; i++) {
+    for (int i = 0; i < numStudents; i++) {
       
       System.out.print("Entrez le nom : ");
       String lastName = scanner.nextLine();
@@ -22,9 +33,9 @@ public class GradingSystem {
       System.out.print("Entrez le prénom : ");
       String firstName = scanner.nextLine();
 
-      int grade1 = getValidGrade(scanner);
-      int grade2 = getValidGrade(scanner); 
-      int grade3 = getValidGrade(scanner);
+      int grade1 = getExamGradeFromUser(scanner);
+      int grade2 = getExamGradeFromUser(scanner); 
+      int grade3 = getExamGradeFromUser(scanner);
 
       students[i] = new Student(lastName, firstName, grade1, grade2, grade3);
     }
@@ -39,7 +50,7 @@ public class GradingSystem {
     scanner.close();
   }
 
-  public static int getValidGrade(Scanner scanner) {
+  public static int getExamGradeFromUser(Scanner scanner) {
     
     int grade;
     do {
@@ -48,39 +59,6 @@ public class GradingSystem {
     } while (grade < 0 || grade > 100); 
 
     return grade;
-  }
-
-}
-
-class Student {
-
-  private final String lastName;
-  private final String firstName;
-  private final int grade1;
-  private final int grade2;
-  private final int grade3;
-
-  public Student(String lastName, String firstName, int grade1, int grade2, int grade3) {
-    this.lastName = lastName;
-    this.firstName = firstName;
-    this.grade1 = grade1;
-    this.grade2 = grade2;
-    this.grade3 = grade3;
-  }
-
-  public double calculateAverageGrade() {
-    return (grade1 + grade2 + grade3) / 3.0;
-  }
-
-  public GradeLetter getGradeLetter() {
-    
-    double avg = calculateAverageGrade();
-    
-    if (avg >= 90) return GradeLetter.A;
-    else if (avg >= 80) return GradeLetter.B;
-    else if (avg >= 70) return GradeLetter.C;
-    else if (avg >= 60) return GradeLetter.D;
-    else return GradeLetter.F;
   }
 
 }
